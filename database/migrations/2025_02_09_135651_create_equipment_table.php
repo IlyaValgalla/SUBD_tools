@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('equipment_PHP', function (Blueprint $table) {
             $table->id();
-            $table->char('name');
+            $table->string('name');
             $table->unsignedInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categoriesPHP');
             $table->integer('quantity_in_stock');
