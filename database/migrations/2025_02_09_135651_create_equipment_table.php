@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('equipment_PHP', function (Blueprint $table) {
+        Schema::create('equipments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->unsignedInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categoriesPHP');
+            $table->foreign('category_id')->references('id')->on('categories');
             $table->integer('quantity_in_stock');
             $table->decimal('price', 10, 2);
             $table->timestamps();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('equipment_PHP');
+        Schema::dropIfExists('equipments');
     }
 };

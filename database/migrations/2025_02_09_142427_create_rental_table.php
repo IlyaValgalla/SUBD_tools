@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rentalPHP', function (Blueprint $table) {
+        Schema::create('rentals', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tool_id');
-            $table->unsignedBigInteger('client_id');
+            $table->unsignedBigInteger('user_id');
             $table->date('start_date');
             $table->date('end_date');
             $table->decimal('planned_cost', 10, 2);
             $table->decimal('actual_amount', 10, 2);
 
-            $table->foreign('tool_id')->references('id')->on('equipment_PHP');
-            $table->foreign('client_id')->references('id')->on('clientPHP');
+            $table->foreign('tool_id')->references('id')->on('equipments');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rentalPHP');
+        Schema::dropIfExists('rentals');
     }
 };

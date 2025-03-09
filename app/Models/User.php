@@ -4,13 +4,39 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
+
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+
+   /* use HasFactory;
+    protected $table = "users";
+    public function rental(): HasMany
+    {
+        return $this->hasMany(Rental::class);
+    }*/
+
+    use HasFactory;
+    protected $table = "users";
+
+    public function equipments(): BelongsToMany
+    {
+        //return $this->belongsToMany(equipment::class,'rentals','user_id', 'tool_id');
+        return $this->belongsToMany(equipment::class,'rentals','user_id', 'tool_id')
+        ->withPivot(['planned_cost','actual_amount']);
+    }
+
+
+/** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +46,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'password',
+       'password',
     ];
 
     /**
@@ -42,7 +68,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+           'password' => 'hashed',
         ];
     }
 }
+
