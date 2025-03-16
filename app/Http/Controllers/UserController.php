@@ -6,7 +6,7 @@ use App\Models\Equipment;
 use App\Models\Rental;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
@@ -38,66 +38,42 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-  /*  public function show(string $id)
-    {
-        $user = User::all()->where('id', $id)->first();
-
-        return view('user',[
-           'user' => $user,
-            'equipment' => $user->equipments->all() ]);
-    }*/
-/////////////////////////////////////////////////////////////////
-   /* public function show(string $id)
-    {
-        // Получаем пользователя по ID
-        $user = User::all()->where('id', $id)->first();
-
-        // Если пользователь не найден, возвращаем 404
-        if (!$user) {
-            abort(404, 'Пользователь не найден');
-        }
-
-        // Получаем оборудование пользователя
-        $equipment = $user->equipments;
-
-        // Вычисляем общую стоимость аренды для пользователя
-        $total = DB::table('rentals')
-            ->selectRaw('sum(planned_cost) as total')
-            ->where('user_id', $id) // Используем user_id, так как rentals связаны с пользователем
-            ->first();
-
-        // Возвращаем данные в представление
-        return view('user', [
-            'user' => $user,
-            'equipment' => $user->equipments->all(),
-            'total' => $total->total ?? 0 // Если сумма не найдена, возвращаем 0
-        ]);
-    }*/
 
     public function show(string $id)
     {
-        // Получаем пользователя по ID
         $user = User::find($id);
 
-        // Если пользователь не найден, возвращаем 404
         if (!$user) {
             abort(404, 'Пользователь не найден');
         }
 
-        // Получаем оборудование пользователя
-        $equipments = $user->equipments;
+        // Загружаем все аренды пользователя с инструментами
+        $rentals = Rental::where('user_id', $id)->with('equipment')->get();
 
-        // Вычисляем суммарные стоимости
-        $totalPlannedCost = $equipments->sum('pivot.planned_cost');
-        $totalActualAmount = $equipments->sum('pivot.actual_amount');
+        $totalPlannedCost = $rentals->sum(function ($rental) {
+            $startDate = Carbon::parse($rental->start_date);
+            $endDate = Carbon::parse($rental->end_date);
+            $days = $startDate->diffInDays($endDate);
 
-        // Возвращаем данные в представление
+            if ($days == 0) {
+                $days = 1; // Если аренда на 1 день, корректируем
+            }
+
+            $quantity = $rental->quantity ?? 1; // Укороченная проверка
+
+            return $rental->equipment ? $days * $rental->equipment->price * $quantity : 0;
+        });
+
         return view('user', [
             'user' => $user,
+            'rentals' => $rentals,
             'totalPlannedCost' => $totalPlannedCost,
-            'totalActualAmount' => $totalActualAmount
+            'totalActualAmount' => $rentals->sum('actual_amount')
         ]);
     }
+
+
+
     /**
      * Show the form for editing the specified resource.
      */

@@ -12,6 +12,8 @@ class Equipment extends Model
 {
     use HasFactory;
     protected $table = "equipments";
+
+    protected $guarded = ['id'];
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Equipment;
 use Illuminate\Http\Request;
 
@@ -22,7 +23,9 @@ class EquipmentController extends Controller
      */
     public function create()
     {
-        //
+        return view('equipment_create', [
+            'categories' => Category::all()
+        ]);
     }
 
     /**
@@ -30,7 +33,16 @@ class EquipmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|unique:equipments|max:255',
+            'price' => 'required|integer',
+            'category_id' => 'integer',
+            'quantity_in_stock' => 'required|integer|min:0',
+        ]);
+        $equipment= new Equipment($validated);
+        $equipment->save();
+        return redirect('/equipment');
+
     }
 
     /**
@@ -53,13 +65,15 @@ class EquipmentController extends Controller
     }
 
 
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
-        //
+        return view('equipment_edit', [
+           'equipment' => Equipment::all()->where('id',$id)->first(),
+           'categories' => Category::all()
+        ]);
     }
 
     /**
@@ -67,7 +81,23 @@ class EquipmentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Находим оборудование по ID
+        $equipment = Equipment::findOrFail($id);
+
+        // Валидация данных
+        $validated = $request->validate([
+            'name' => 'required|max:255|unique:equipments,name,' . $equipment->id, // Уникальность, исключая текущую запись
+            'price' => 'required|integer',
+            'category_id' => 'required|integer',
+            'quantity_in_stock' => 'required|integer|min:0',
+        ]);
+
+        // Обновляем оборудование
+        $equipment->update($validated);
+
+        // Перенаправляем пользователя с сообщением об успехе
+        return redirect('/equipment')->with('success', 'Товар успешно обновлён.');
+
     }
 
     /**
@@ -75,6 +105,7 @@ class EquipmentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Equipment::destroy($id);
+        return redirect('/equipment');
     }
 }

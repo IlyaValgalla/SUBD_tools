@@ -10,13 +10,21 @@
         <thead>
             <td>id</td>
             <td>Наименование</td>
+            <td>Действия</td>
         </thead>
     @foreach($categories as $category)
             <tr>
                 <td>{{$category->id}}</td>
                 <td>{{$category->name}}</td>
+                <td><a href="{{url('category/destroy/'.$category->id)}}">Удалить</a>
+                    <a href="{{url('category/edit/'.$category->id)}}">Редактировать</a>
             </tr>
     @endforeach
     </table>
+    <br>
+    <a href='/category/create'>
+        <button type="button">Создать категорию</button>
+    </a>
+
 </body>
 </html>

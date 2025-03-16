@@ -10,6 +10,8 @@ class Category extends Model
 {
     use HasFactory;
     protected $table = "categories";
+    protected $guarded = ['id'];
+
     public function equipment(): HasMany //название класса модели
     {
         return $this->hasMany(Equipment::class);

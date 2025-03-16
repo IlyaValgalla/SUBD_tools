@@ -10,7 +10,7 @@
     <table border="1">
         <thead>
         <tr>
-            <th>id</th>
+            <th>ID аренды</th>
             <th>Начало аренды</th>
             <th>Конец аренды</th>
             <th>Цена плановая</th>
@@ -23,18 +23,23 @@
         <tbody>
         @foreach($equipment->rentals as $rental)
             <tr>
-                <td>{{$rental->id}}</td>
-                <td>{{$rental->start_date}}</td>
-                <td>{{$rental->end_date}}</td>
-                <td>{{$rental->planned_cost}}</td>
-                <td>{{$rental->actual_amount}}</td>
-                <td>{{$rental->user_id}}</td>
-                <td>{{$rental->user->name}}</td>
-                <td>{{$rental->user->email}}</td>
+                <td>{{ $rental->id }}</td>
+                <td>{{ $rental->start_date }}</td>
+                <td>{{ $rental->end_date }}</td>
+                <td>
+                    {{ ((strtotime($rental->end_date) - strtotime($rental->start_date)) / 86400 + 1) * $equipment->price }}
+                </td>
+                <td>{{ $rental->actual_amount }}</td>
+                <td>{{ $rental->user_id }}</td>
+                <td>{{ $rental->user->name }}</td>
+                <td>{{ $rental->user->email }}</td>
             </tr>
         @endforeach
         </tbody>
     </table>
 @endif
+
 </body>
 </html>
+
+

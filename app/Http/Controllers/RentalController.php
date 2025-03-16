@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Rental;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\User;
 
 class RentalController extends Controller
 {
@@ -28,17 +30,18 @@ class RentalController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
-        //
+
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-
     }
 
     /**

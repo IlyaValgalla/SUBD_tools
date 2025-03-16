@@ -30,7 +30,8 @@ class User extends Authenticatable
     {
         //return $this->belongsToMany(equipment::class,'rentals','user_id', 'tool_id');
         return $this->belongsToMany(equipment::class,'rentals','user_id', 'tool_id')
-        ->withPivot(['planned_cost','actual_amount']);
+        ->withPivot(['actual_amount']);
+
     }
 
 

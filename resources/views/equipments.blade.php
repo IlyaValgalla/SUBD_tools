@@ -13,6 +13,7 @@
         <td>Категория</td>
         <td>Количество на складе</td>
         <td>Цена</td>
+        <td>Действия</td>
 
         </thead>
         @foreach($equipments as $equipment)
@@ -22,8 +23,16 @@
                 <td>{{$equipment->category->name}}</td>
                 <td>{{$equipment->quantity_in_stock}}</td>
                 <td>{{$equipment->price}}</td>
+                <td><a href="{{url('equipment/destroy/'.$equipment->id)}}">Удалить</a>
+                    <a href="{{url('equipment/edit/'.$equipment->id)}}">Редактировать</a>
+                </td>
             </tr>
         @endforeach
     </table>
+<br>
+
+<a href='/equipment/create'>
+    <button type="button">Создать оборудование</button>
+</a>
 </body>
 </html>
