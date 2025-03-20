@@ -25,6 +25,7 @@
     <a href='/category/create'>
         <button type="button">Создать категорию</button>
     </a>
-
+    <br>
+    <div>{{ $categories->links() }}</div>
 </body>
 </html>

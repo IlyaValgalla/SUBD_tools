@@ -10,10 +10,15 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('categories', ['categories' => Category::all()]);
+       // return view('categories', ['categories' => Category::all()]);
+        $perpage = $request->perpage ?? 5;
+        return view('categories',[
+            'categories' => Category::paginate($perpage)->withQueryString()
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
