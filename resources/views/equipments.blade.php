@@ -29,10 +29,15 @@
             </tr>
         @endforeach
     </table>
+
 <br>
 
 <a href='/equipment/create'>
     <button type="button">Создать оборудование</button>
 </a>
+<br>
+
+<div>{{ $equipments->links() }}</div>
+
 </body>
 </html>

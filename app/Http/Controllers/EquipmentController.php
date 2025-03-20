@@ -11,10 +11,11 @@ class EquipmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $perpage = $request->perpage ?? 5;
         return view('equipments',[
-            'equipments' => Equipment::all()
+            'equipments' => Equipment::paginate($perpage)->withQueryString()
         ]);
     }
 
