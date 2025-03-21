@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Equipment;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 
 class EquipmentController extends Controller
@@ -24,9 +25,16 @@ class EquipmentController extends Controller
      */
     public function create()
     {
+        if (! Gate::allows('create-equipment')) {
+            return redirect('/error')->with('message',
+                'У вас нет разрешения на создание инструмента' );
+        }
+
         return view('equipment_create', [
             'categories' => Category::all()
         ]);
+
+
     }
 
     /**
@@ -71,10 +79,17 @@ class EquipmentController extends Controller
      */
     public function edit(string $id)
     {
+        if (! Gate::allows('update-equipment', Equipment::all()->where('id', $id)->first())) {
+            return redirect('/error')->with('message',
+                'У вас нет разрешения на редактирование товара номер '.$id);
+        }
+
+        //////////
         return view('equipment_edit', [
            'equipment' => Equipment::all()->where('id',$id)->first(),
            'categories' => Category::all()
         ]);
+        ///////
     }
 
     /**
@@ -106,6 +121,10 @@ class EquipmentController extends Controller
      */
     public function destroy(string $id)
     {
+        if (! Gate::allows('destroy-equipment', Equipment::all()->where('id', $id)->first())) {
+            return redirect('/error')->with('message',
+            'У вас нет разрешения на удаления товара номер '.$id);
+        }
         Equipment::destroy($id);
         return redirect('/equipment');
     }

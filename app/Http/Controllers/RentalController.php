@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Rental;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class RentalController extends Controller
 {
@@ -14,6 +16,11 @@ class RentalController extends Controller
      */
     public function index()
     {
+        if (! Gate::allows('index-rental')) {
+            return redirect('/error')->with('message',
+                'У вас нет разрешения на чтение');
+        }
+
         return view('rentals',[
             'rentals' => Rental::all()
         ]);

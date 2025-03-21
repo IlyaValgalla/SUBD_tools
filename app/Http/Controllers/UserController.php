@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Equipment;
 use App\Models\Rental;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -16,6 +18,11 @@ class UserController extends Controller
      */
     public function index()
     {
+        if (! Gate::allows('index-user')) {
+            return redirect('/error')->with('message',
+                'У вас нет разрешения на просмотр других пользователей');
+        }
+
         return view('users', ['users' => User::all()]);
     }
 
@@ -41,6 +48,12 @@ class UserController extends Controller
 
     public function show(string $id)
     {
+
+        if (! Gate::allows('show-user')) {
+            return redirect('/error')->with('message',
+                'У вас нет разрешения на просмотр других пользователей');
+        }
+
         $user = User::find($id);
 
         if (!$user) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends Controller
 {
@@ -25,8 +26,13 @@ class CategoryController extends Controller
      */
     public function create()
     {
+        if (! Gate::allows('create-category')) {
+            return redirect('/error')->with('message',
+                'У вас нет разрешения на создание категории инструмента' );
+        }
         return view('category_create');
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -56,9 +62,18 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
+
+        if (! Gate::allows('update-category', Category::all()->where('id', $id)->first())) {
+            return redirect('/error')->with('message',
+                'У вас нет разрешения на редактирование категории товара');
+        }
+
+        //////////
         return view('category_edit', [
             'category' => Category::all()->where('id',$id)->first(),
         ]);
+        ////////
+
     }
 
     /**
@@ -86,6 +101,11 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
+        if (! Gate::allows('destroy-category', Category::all()->where('id', $id)->first())) {
+            return redirect('/error')->with('message',
+                'У вас нет разрешения на удаление категории');
+        }
+
         Category::destroy($id);
         return redirect('/category');
     }
