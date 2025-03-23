@@ -65,5 +65,14 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('index-rental', function (User $user){
             return $user->is_admin;
         });
+
+        ///////
+        ///
+        ///////
+        //Для разграничения перехода по сылке инструмента (админ/пользователь)
+        Gate::define('view-equipment-rentals', function (User $user) {
+            return $user->is_admin;
+        });
+
     }
 }

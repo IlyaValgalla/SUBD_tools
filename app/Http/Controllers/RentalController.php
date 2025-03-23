@@ -17,8 +17,8 @@ class RentalController extends Controller
     public function index()
     {
         if (! Gate::allows('index-rental')) {
-            return redirect('/error')->with('message',
-                'У вас нет разрешения на чтение');
+            return redirect()->intended('/equipment')->withErrors(['error' =>
+                'У вас нет разрешения на чтение списка аренд']);
         }
 
         return view('rentals',[

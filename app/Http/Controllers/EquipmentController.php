@@ -26,15 +26,13 @@ class EquipmentController extends Controller
     public function create()
     {
         if (! Gate::allows('create-equipment')) {
-            return redirect('/error')->with('message',
-                'У вас нет разрешения на создание инструмента' );
-        }
+            return redirect()->intended('/equipment')->withErrors(['error' =>
+                'У вас нет разрешения на создание инструмента']);
 
+        }
         return view('equipment_create', [
             'categories' => Category::all()
         ]);
-
-
     }
 
     /**
@@ -50,7 +48,8 @@ class EquipmentController extends Controller
         ]);
         $equipment= new Equipment($validated);
         $equipment->save();
-        return redirect('/equipment');
+        return redirect()->intended('/equipment')->withErrors(['success' =>
+            'Вы успешно создали Инструмент!']);
 
     }
 
@@ -58,19 +57,42 @@ class EquipmentController extends Controller
      * Display the specified resource.
      */
 
+//    public function show(string $id)
+//    {   /*return view('equipment',[
+//            'equipment' => Equipment::all()->where('id', $id)->first()
+//        ]);*/
+//
+//        $equipment = Equipment::findOrFail($id);
+//
+//        $equipment = Equipment::with('rentals')->find($id);
+//
+//        if (!$equipment) {
+//            return redirect()->back()->withErrors(['error' => 'Оборудование не найдено']);
+//        }
+//
+//        return view('equipment', ['equipment'=>$equipment]);
+//
+//
+//
+////        return view('equipment', [
+////            'equipment' => $equipment
+////        ]);
+//    }
+
+
     public function show(string $id)
-    {   /*return view('equipment',[
-            'equipment' => Equipment::all()->where('id', $id)->first()
-        ]);*/
-        $equipment = Equipment::with('rentals')->find($id);
+    {
+        if (!Gate::allows('view-equipment-rentals')) {
+            return redirect()->route('equipment.index')->withErrors(['error' => 'У вас нет прав для просмотра этой информации']);
+        }
+
+        $equipment = Equipment::with('rentals')->findOrFail($id);
 
         if (!$equipment) {
             return redirect()->back()->withErrors(['error' => 'Оборудование не найдено']);
         }
 
-        return view('equipment', [
-            'equipment' => $equipment
-        ]);
+        return view('equipment', ['equipment' => $equipment]);
     }
 
 
@@ -79,11 +101,11 @@ class EquipmentController extends Controller
      */
     public function edit(string $id)
     {
-        if (! Gate::allows('update-equipment', Equipment::all()->where('id', $id)->first())) {
-            return redirect('/error')->with('message',
-                'У вас нет разрешения на редактирование товара номер '.$id);
-        }
+        if (! Gate::allows('update-equipment')) {
+            return redirect()->intended('/equipment')->withErrors(['error' =>
+                'У вас нет разрешения нна редактирование товара']);
 
+        }
         //////////
         return view('equipment_edit', [
            'equipment' => Equipment::all()->where('id',$id)->first(),
@@ -112,7 +134,8 @@ class EquipmentController extends Controller
         $equipment->update($validated);
 
         // Перенаправляем пользователя с сообщением об успехе
-        return redirect('/equipment')->with('success', 'Товар успешно обновлён.');
+        return redirect()->intended('/equipment')->withErrors(['success' =>
+            'Товар успешно обновлён!']);
 
     }
 
@@ -121,11 +144,13 @@ class EquipmentController extends Controller
      */
     public function destroy(string $id)
     {
-        if (! Gate::allows('destroy-equipment', Equipment::all()->where('id', $id)->first())) {
-            return redirect('/error')->with('message',
-            'У вас нет разрешения на удаления товара номер '.$id);
+        if (! Gate::allows('destroy-equipment')) {
+            return redirect()->intended('/equipment')->withErrors(['error' =>
+                'У вас нет разрешения на удаления товара']);
         }
+
         Equipment::destroy($id);
-        return redirect('/equipment');
+        return redirect()->intended('/equipment')->withErrors(['success' =>
+            'Товар успешно удалён!']);
     }
 }

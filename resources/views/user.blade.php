@@ -37,47 +37,113 @@
 {{--</body>--}}
 {{--</html>--}}
 
-    <!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Информация об аренде</title>
-</head>
-<body>
-<h2>{{ $user ? "Заказы пользователя: ".$user->name." ".$user->last_name : 'Неверный ID' }}</h2>
+{{--    <!doctype html>--}}
+{{--<html lang="en">--}}
+{{--<head>--}}
+{{--    <meta charset="UTF-8">--}}
+{{--    <title>Информация об аренде</title>--}}
+{{--</head>--}}
+{{--<body>--}}
+{{--<h2>{{ $user ? "Заказы пользователя: ".$user->name." ".$user->last_name : 'Неверный ID' }}</h2>--}}
 
-@if($user)
-    <table border="1">
-        <tr>
-            <th>ID аренды</th>
-            <th>Категория инструмента</th>
-            <th>Наименование инструмента</th>
-            <th>Цена аренды за день</th>
-            <th>Дата начала аренды</th>
-            <th>Дата окончания аренды</th>
-            <th>Запланированная стоимость</th>
-            <th>Фактическая стоимость</th>
-        </tr>
+{{--@if($user)--}}
+{{--    <table border="1">--}}
+{{--        <tr>--}}
+{{--            <th>ID аренды</th>--}}
+{{--            <th>Категория инструмента</th>--}}
+{{--            <th>Наименование инструмента</th>--}}
+{{--            <th>Цена аренды за день</th>--}}
+{{--            <th>Дата начала аренды</th>--}}
+{{--            <th>Дата окончания аренды</th>--}}
+{{--            <th>Запланированная стоимость</th>--}}
+{{--            <th>Фактическая стоимость</th>--}}
+{{--        </tr>--}}
 
-        @foreach($rentals as $rental)
-            <tr>
-                <td>{{ $rental->id }}</td>
-                <td>{{ $rental->equipment->category->name }}</td>
-                <td>{{ $rental->equipment->name }}</td>
-                <td>{{ $rental->equipment->price }}</td>
-                <td>{{ $rental->start_date }}</td>
-                <td>{{ $rental->end_date }}</td>
-                <td>
-                    {{ (strtotime($rental->end_date) - strtotime($rental->start_date)) / 86400 * $rental->equipment->price }}
-                </td>
-                <td>{{ $rental->actual_amount }}</td>
-            </tr>
-        @endforeach
-    </table>
+{{--        @foreach($rentals as $rental)--}}
+{{--            <tr>--}}
+{{--                <td>{{ $rental->id }}</td>--}}
+{{--                <td>{{ $rental->equipment->category->name }}</td>--}}
+{{--                <td>{{ $rental->equipment->name }}</td>--}}
+{{--                <td>{{ $rental->equipment->price }}</td>--}}
+{{--                <td>{{ $rental->start_date }}</td>--}}
+{{--                <td>{{ $rental->end_date }}</td>--}}
+{{--                <td>--}}
+{{--                    {{ (strtotime($rental->end_date) - strtotime($rental->start_date)) / 86400 * $rental->equipment->price }}--}}
+{{--                </td>--}}
+{{--                <td>{{ $rental->actual_amount }}</td>--}}
+{{--            </tr>--}}
+{{--        @endforeach--}}
+{{--    </table>--}}
 
-    <h3>Суммарная запланированная стоимость аренды: {{ $totalPlannedCost }}</h3>
-    <h3>Суммарная фактическая стоимость аренды: {{ $totalActualAmount }}</h3>
-@endif
-</body>
-</html>
+{{--    <h3>Суммарная запланированная стоимость аренды: {{ $totalPlannedCost }}</h3>--}}
+{{--    <h3>Суммарная фактическая стоимость аренды: {{ $totalActualAmount }}</h3>--}}
+{{--@endif--}}
+{{--</body>--}}
+{{--</html>--}}
 
+
+@extends('layout')
+@section('content')
+    <div class="container">
+        <h2>{{ $user ? "Заказы пользователя: " . $user->name . " " . $user->last_name : 'Неверный ID' }}</h2>
+
+        @if($user)
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>ID аренды</th>
+                        <th>Категория инструмента</th>
+                        <th>Наименование инструмента</th>
+                        <th>Цена аренды за день (в ₽)</th>
+                        <th>Дата начала аренды</th>
+                        <th>Дата окончания аренды</th>
+                        <th>Запланированная стоимость</th>
+                        <th>Фактическая стоимость</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($rentals as $rental)
+                        <tr>
+                            <td>{{ $rental->id }}</td>
+                            <td>{{ $rental->equipment->category->name }}</td>
+                            <td>{{ $rental->equipment->name }}</td>
+                            <td>{{ $rental->equipment->price }}</td>
+                            <td>{{ $rental->start_date }}</td>
+                            <td>{{ $rental->end_date }}</td>
+                            <td>
+                                {{ (strtotime($rental->end_date) - strtotime($rental->start_date)) / 86400 * $rental->equipment->price }} ₽
+                            </td>
+                            <td>{{ $rental->actual_amount }} ₽</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4">
+                <h3>Суммарная запланированная стоимость аренды: {{ $totalPlannedCost }} ₽</h3>
+                <h3>Суммарная фактическая стоимость аренды: {{ $totalActualAmount }} ₽</h3>
+            </div>
+
+
+                {{-- css для кнопки назад справа --}}
+            <style>
+                .back-button-container {
+                    display: flex;
+                    justify-content: flex-end;
+                    margin-bottom: 1rem;
+                }
+            </style>
+
+            <div class="back-button-container">
+                <a href="{{ url('/user') }}" class="btn btn-secondary">Назад</a>
+            </div>
+
+        @else
+            <div class="alert alert-warning" role="alert">
+                Пользователь с указанным ID не найден.
+            </div>
+        @endif
+    </div>
+@endsection

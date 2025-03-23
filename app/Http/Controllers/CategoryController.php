@@ -27,8 +27,9 @@ class CategoryController extends Controller
     public function create()
     {
         if (! Gate::allows('create-category')) {
-            return redirect('/error')->with('message',
-                'У вас нет разрешения на создание категории инструмента' );
+            return redirect()->intended('/category')->withErrors(['error' =>
+                'У вас нет разрешения на создание категории инструмента']);
+
         }
         return view('category_create');
     }
@@ -44,7 +45,10 @@ class CategoryController extends Controller
         ]);
         $category= new Category($validated);
         $category->save();
-        return redirect('/category');
+
+        return redirect()->intended('/category')->withErrors(['success' =>
+            'Вы успешно создали категорию инструмента!']);
+
     }
 
     /**
@@ -52,9 +56,13 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        return view('category',[
-            'category' => Category::all()->where('id', $id)->first()
-        ]);
+        $category = Category::findOrFail($id);
+        return view('category', ['category'=>$category]);
+
+
+//        return view('category',[
+//            'category' => Category::all()->where('id', $id)->first()
+//        ]);
     }
 
     /**
@@ -63,9 +71,9 @@ class CategoryController extends Controller
     public function edit(string $id)
     {
 
-        if (! Gate::allows('update-category', Category::all()->where('id', $id)->first())) {
-            return redirect('/error')->with('message',
-                'У вас нет разрешения на редактирование категории товара');
+        if (! Gate::allows('update-category')) {
+            return redirect()->intended('/category')->withErrors(['error' =>
+                'У вас нет разрешения на редактирование категории инструмента']);
         }
 
         //////////
@@ -73,7 +81,6 @@ class CategoryController extends Controller
             'category' => Category::all()->where('id',$id)->first(),
         ]);
         ////////
-
     }
 
     /**
@@ -93,7 +100,8 @@ class CategoryController extends Controller
         $category->update($validated);
 
         // Перенаправляем пользователя с сообщением об успехе
-        return redirect('/category')->with('success', 'Категория товара успешно обновлёна.');
+        return redirect()->intended('/category')->withErrors(['success' =>
+            'Категория товара успешно обновлёна!']);
     }
 
     /**
@@ -101,12 +109,14 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        if (! Gate::allows('destroy-category', Category::all()->where('id', $id)->first())) {
-            return redirect('/error')->with('message',
-                'У вас нет разрешения на удаление категории');
+        if (! Gate::allows('destroy-category')) {
+            return redirect()->intended('/category')->withErrors(['error' =>
+                'У вас нет разрешения на удаление категории инструмента']);
+
         }
 
         Category::destroy($id);
-        return redirect('/category');
+        return redirect()->intended('/category')->withErrors(['success' =>
+            'Категория успешно удалёна!']);
     }
 }

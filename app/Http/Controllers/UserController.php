@@ -18,9 +18,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        if (! Gate::allows('index-user')) {
-            return redirect('/error')->with('message',
-                'У вас нет разрешения на просмотр других пользователей');
+        if (! Gate::allows('show-user')) {
+            return redirect()->intended('/equipment')->withErrors(['error' =>
+                'У вас нет разрешения на просмотр пользователей']);
         }
 
         return view('users', ['users' => User::all()]);
@@ -49,12 +49,14 @@ class UserController extends Controller
     public function show(string $id)
     {
 
+
         if (! Gate::allows('show-user')) {
-            return redirect('/error')->with('message',
-                'У вас нет разрешения на просмотр других пользователей');
+            return redirect()->intended('/equipment')->withErrors(['error' =>
+                'У вас нет разрешения на просмотр пользователей']);
         }
 
-        $user = User::find($id);
+        $user = User::findOrFail($id);
+        //$user = User::find($id);
 
         if (!$user) {
             abort(404, 'Пользователь не найден');
