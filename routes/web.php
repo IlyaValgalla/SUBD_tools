@@ -23,6 +23,9 @@ Route::put('/category/update/{id}', [CategoryController::class, 'update'])->midd
 Route::get('/category/destroy/{id}', [CategoryController::class, 'destroy'])->middleware('auth');
 Route::get('/category/{id}', [CategoryController::class, 'show'])->middleware('auth')->name('category.show'); //вывод списка инструментов по id категории
 
+
+
+
 Route::get('/equipment', [EquipmentController::class, 'index'])->middleware('auth'); //Список инструментов
 Route::get('/equipment/create', [EquipmentController::class, 'create'])->middleware('auth');// создание инструмента класса
 Route::post('/equipment', [EquipmentController::class, 'store'])->middleware('auth');
@@ -47,3 +50,23 @@ Route::post('/auth', [LoginController::class, 'authenticate']);
 Route::get('error', function (){
     return view('error', ['message' => session('message')]);
 });
+
+
+/////////////// API маршруты  ///////////////////
+Route::prefix('api')->group(function () {
+
+    Route::get('/category', [App\Http\Controllers\api\CategoryControllerApi::class, 'index']);
+    Route::get('/category/{id}', [App\Http\Controllers\api\CategoryControllerApi::class, 'show']);
+
+    Route::get('/equipment', [App\Http\Controllers\api\EquipmentControllerApi::class, 'index']);
+    Route::get('/equipment/{id}', [App\Http\Controllers\api\EquipmentControllerApi::class, 'show']);
+
+    Route::get('/rental', [App\Http\Controllers\api\RentalControllerApi::class, 'index']);
+    Route::get('/rental/{id}', [App\Http\Controllers\api\RentalControllerApi::class, 'show']);
+
+    Route::get('/user', [App\Http\Controllers\api\UserControllerApi::class, 'index']);
+    Route::get('/user/{id}', [App\Http\Controllers\api\UserControllerApi::class, 'show']);
+});
+
+
+

@@ -99,7 +99,5 @@
                 {{ $equipments->links() }}
             </div>
         </div>
-
-
     </div>
 @endsection
