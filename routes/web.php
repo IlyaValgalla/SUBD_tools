@@ -1,10 +1,16 @@
 <?php
 
+use App\Http\Controllers\api\CategoryControllerApi;
+use App\Http\Controllers\api\EquipmentControllerApi;
+use App\Http\Controllers\api\RentalControllerApi;
+use App\Http\Controllers\api\UserControllerApi;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\LoginController;
+use http\Client\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -52,21 +58,38 @@ Route::get('error', function (){
 });
 
 
-/////////////// API маршруты  ///////////////////
+
+
+///////////////// API маршруты  ///////////////////
+
 Route::prefix('api')->group(function () {
+////// Токен Аунтификация //////////
+    Route::post('/login',[AuthController::class,'login']);
 
-    Route::get('/category', [App\Http\Controllers\api\CategoryControllerApi::class, 'index']);
-    Route::get('/category/{id}', [App\Http\Controllers\api\CategoryControllerApi::class, 'show']);
+    Route::middleware('auth:sanctum')->get('/category', [CategoryControllerApi::class, 'index']);
+    //Route::get('/category', [CategoryControllerApi::class, 'index']);
+    Route::get('/category/{id}', [CategoryControllerApi::class, 'show']);
 
-    Route::get('/equipment', [App\Http\Controllers\api\EquipmentControllerApi::class, 'index']);
-    Route::get('/equipment/{id}', [App\Http\Controllers\api\EquipmentControllerApi::class, 'show']);
+    Route::get('/equipment', [EquipmentControllerApi::class, 'index']);
+    Route::get('/equipment/{id}', [EquipmentControllerApi::class, 'show']);
 
-    Route::get('/rental', [App\Http\Controllers\api\RentalControllerApi::class, 'index']);
-    Route::get('/rental/{id}', [App\Http\Controllers\api\RentalControllerApi::class, 'show']);
+    Route::get('/rental', [RentalControllerApi::class, 'index']);
+    Route::get('/rental/{id}', [RentalControllerApi::class, 'show']);
 
-    Route::get('/user', [App\Http\Controllers\api\UserControllerApi::class, 'index']);
-    Route::get('/user/{id}', [App\Http\Controllers\api\UserControllerApi::class, 'show']);
+    Route::middleware('auth:sanctum')->get('/user', [UserControllerApi::class, 'index']);
+    //Route::get('/user', [UserControllerApi::class, 'index']);
+    Route::get('/user/{id}', [UserControllerApi::class, 'show']);
+
+    Route::middleware('auth:sanctum')->get('/logout',[AuthController::class, 'logout']);
+
+    Route::group(['middleware' => ['auth:sanctum']], function (){
+       Route::get('/category', [CategoryControllerApi::class, 'index']);
+       Route::get('/user', function (Request $request) {
+           return $request->user();
+       });
+    });
 });
+
 
 
 

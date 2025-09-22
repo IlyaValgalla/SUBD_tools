@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -23,7 +24,8 @@ class User extends Authenticatable
         return $this->hasMany(Rental::class);
     }*/
 
-    use HasFactory;
+    use HasApiTokens, HasFactory, Notifiable;
+
     protected $table = "users";
 
     public function equipments(): BelongsToMany

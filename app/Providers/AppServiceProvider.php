@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
         Paginator::defaultView('pagination::default');
 
         Gate::define('destroy-equipment', function (User $user){
