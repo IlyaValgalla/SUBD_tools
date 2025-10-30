@@ -6,6 +6,15 @@ use Illuminate\Foundation\Configuration\Middleware;
 
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful; //я добавил
 
+use Illuminate\Http\Request;
+
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
+
+//RateLimiter::for('api', function ($request) {
+//    return Limit::perMinute(60)->by(optional($request->user())->id ?: $request->ip());
+//});
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -14,6 +23,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
 
     )
+
+
     ->withMiddleware(function (Middleware $middleware) {
        //Было пусто я добавил:
         $middleware->validateCsrfTokens(except: [
@@ -23,10 +34,21 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->group('api', [
             EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
+
+// Вот из-за этой строки падал сервак          \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
     })
+
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })   ->create();
+    })
+//        ->withRateLimiting(function () {
+//            RateLimiter::for('api', function ($request) {
+//               return Limit::perMinute(60)->by(
+//               optional($request->user())->id ?: $request->ip()
+//                );
+//            });
+//        })
+    ->create();
+

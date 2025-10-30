@@ -62,33 +62,33 @@ Route::get('error', function (){
 
 ///////////////// API маршруты  ///////////////////
 
-Route::prefix('api')->group(function () {
-////// Токен Аунтификация //////////
-    Route::post('/login',[AuthController::class,'login']);
-
-    Route::middleware('auth:sanctum')->get('/category', [CategoryControllerApi::class, 'index']);
-    //Route::get('/category', [CategoryControllerApi::class, 'index']);
-    Route::get('/category/{id}', [CategoryControllerApi::class, 'show']);
-
-    Route::get('/equipment', [EquipmentControllerApi::class, 'index']);
-    Route::get('/equipment/{id}', [EquipmentControllerApi::class, 'show']);
-
-    Route::get('/rental', [RentalControllerApi::class, 'index']);
-    Route::get('/rental/{id}', [RentalControllerApi::class, 'show']);
-
-    Route::middleware('auth:sanctum')->get('/user', [UserControllerApi::class, 'index']);
-    //Route::get('/user', [UserControllerApi::class, 'index']);
-    Route::get('/user/{id}', [UserControllerApi::class, 'show']);
-
-    Route::middleware('auth:sanctum')->get('/logout',[AuthController::class, 'logout']);
-
-    Route::group(['middleware' => ['auth:sanctum']], function (){
-       Route::get('/category', [CategoryControllerApi::class, 'index']);
-       Route::get('/user', function (Request $request) {
-           return $request->user();
-       });
-    });
-});
+//Route::prefix('api')->group(function () {
+//////// Токен Аунтификация //////////
+//    Route::post('/login',[AuthController::class,'login']);
+//
+//    Route::middleware('auth:sanctum')->get('/category', [CategoryControllerApi::class, 'index']);
+//    //Route::get('/category', [CategoryControllerApi::class, 'index']);
+//    Route::get('/category/{id}', [CategoryControllerApi::class, 'show']);
+//
+//    Route::get('/equipment', [EquipmentControllerApi::class, 'index']);
+//    Route::get('/equipment/{id}', [EquipmentControllerApi::class, 'show']);
+//
+//    Route::get('/rental', [RentalControllerApi::class, 'index']);
+//    Route::get('/rental/{id}', [RentalControllerApi::class, 'show']);
+//
+//    Route::middleware('auth:sanctum')->get('/user', [UserControllerApi::class, 'index']);
+//    //Route::get('/user', [UserControllerApi::class, 'index']);
+//    Route::get('/user/{id}', [UserControllerApi::class, 'show']);
+//
+//    Route::middleware('auth:sanctum')->get('/logout',[AuthController::class, 'logout']);
+//
+//    Route::group(['middleware' => ['auth:sanctum']], function (){
+//       Route::get('/category', [CategoryControllerApi::class, 'index']);
+//       Route::get('/user', function (Request $request) {
+//           return $request->user();
+//       });
+//    });
+//});
 
 
 

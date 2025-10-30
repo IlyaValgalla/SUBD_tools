@@ -11,9 +11,22 @@ class EquipmentControllerApi extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response(Equipment::all());
+        $perpage = $request->perpage ?? 5;
+        $page = $request->page ?? 0;
+
+        $equipment = Equipment::limit($perpage)
+            ->offset($perpage * $page)
+            ->get();
+
+        return response()->json($equipment);
+    }
+
+    public function total()
+    {
+        $count = Equipment::count();
+        return response()->json($count);
     }
 
     /**

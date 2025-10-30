@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use Laravel\Sanctum\HasApiTokens;
-
 class User extends Authenticatable
 {
 
@@ -38,7 +37,7 @@ class User extends Authenticatable
 
 
 /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
 
     /**
