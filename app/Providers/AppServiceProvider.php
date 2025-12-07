@@ -27,12 +27,13 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::defaultView('pagination::default');
 
-        Gate::define('destroy-equipment', function (User $user){
-           return $user->is_admin;
+        Gate::define('destroy-equipment', function (User $user, Equipment $equipment){
+           return $user->is_admin OR $equipment->price<1000;
         });
 
         Gate::define('create-equipment', function (User $user){
-            return $user->is_admin;
+            //return $user->is_admin;
+            return true;
         });
 
         Gate::define('update-equipment', function (User $user) {
@@ -46,7 +47,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::define('create-category', function (User $user){
-            return $user->is_admin;
+           // return $user->is_admin;
+            return true;
         });
 
         Gate::define('update-category', function (User $user){
